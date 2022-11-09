@@ -51,6 +51,7 @@ int exitGarage(int tNo)
             return 1;
         }
     }
+    return 1;
 }
 
 void showTrucks()
@@ -106,7 +107,7 @@ int main()
     int option;
     while (cont)
     {
-        printf("\n\nWhat operation do you want to perform?\n");
+        printf("\n\nWhat operation do you want to perform?");
         printf("\n1.Enter Garage");
         printf("\n2.Exit Garage");
         printf("\n3.On Road");
@@ -173,16 +174,16 @@ int main()
             {
                 continue;
             }
-            for (int i = 0; i < n; i++)
+            if (choice == 'g') {
+                showTrucks();
+            } else {
+                for (int i = 0; i < n; i++)
             {
-                if (choice == 'g' && !onRoad(arr[i]))
+                if (choice == 'r' && onRoad(arr[i]))
                 {
                     printf("%d ", arr[i]);
                 }
-                else if (choice == 'r' && onRoad(arr[i]))
-                {
-                    printf("%d ", arr[i]);
-                }
+            }
             }
         }
         else if (option == 5)
