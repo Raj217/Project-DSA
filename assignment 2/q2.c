@@ -1,168 +1,196 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-struct Node 
+struct Node
 {
-	int data;
-	struct Node* next;
+    int tNo;
+    struct Node *next;
 };
 
 struct Node *front = NULL, *rear = NULL;
 
-void enqueue(int value)
+void enterGarage(int tNo)
 {
-    struct Node *newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = value;
-    newNode->next = NULL;
+    struct Node *newTruck = (struct Node *)malloc(sizeof(struct Node));
+    newTruck->tNo = tNo;
+    newTruck->next = NULL;
 
-    //if it is the first node
-    if(front == NULL && rear == NULL)
-        //make both front and rear points to the new node
-        front = rear = newNode;
+    if (front == NULL && rear == NULL)
+    {
+        front = newTruck;
+        rear = newTruck;
+    }
     else
     {
-        //add newnode in rear->next
-        rear->next = newNode;
-
-        //make the new node as the rear node
-        rear = newNode;
+        rear->next = newTruck;
+        rear = newTruck;
     }
 }
 
-void dequeue()
+int exitGarage(int tNo)
 {
-    //used to freeing the first node after dequeue
-    struct Node *temp;
-
-    if(front == NULL)
-         printf("Queue is Empty. Unable to perform dequeue\n");
+    if (front == NULL)
+    {
+        printf("Garage is empty\n");
+        return 1;
+    }
     else
     {
-        //take backup
-        temp = front;
-
-        //make the front node points to the next node
-        //logically removing the front element
-        front = front->next;
-
-        //if front == NULL, set rear = NULL
-        if(front == NULL)
-            rear = NULL;
-
-       //free the first node
-       free(temp);
+        if (front->tNo == tNo)
+        {
+            struct Node *temp = front;
+            front = front->next;
+            if (front == NULL)
+                rear = NULL;
+            free(temp);
+            return 0;
+        }
+        else
+        {
+            printf("Truck %d is not near the garage door", tNo);
+            return 1;
+        }
     }
-
 }
 
 void showTrucks()
 {
+
     struct Node *temp = front;
 
-    while(temp != NULL)
+    while (temp != NULL)
     {
-        printf("%d ",temp->data);
+        printf("%d ", temp->tNo);
         temp = temp->next;
-        if(temp->next == NULL)
-        {
-            printf("\n");
-        }
     }
 }
 
+bool onRoad(int tNo)
+{
+    struct Node *temp = front;
 
+    if (rear != NULL)
+    {
+        while (temp != rear)
+        {
+            if (temp->tNo == tNo)
+            {
+                return false;
+            }
+            temp = temp->next;
+        }
+        if (temp->tNo == tNo)
+        {
+            return false;
+        }
+        return true;
+    }
+    return true;
+}
 
-
-int main() 
+int main()
 {
     int n;
-    printf("Enter how many trucks : ");
+    printf("How many trucks do you want to handle: ");
     scanf("%d", &n);
-    int  *trucks= (int *)malloc(sizeof(int)*n);
-    printf("\nEnter trucks : ");
-    for(int i=0;i<n;i++) 
+    int *arr = (int *)malloc(sizeof(int) * n);
+    printf("\nEnter the truck nos: ");
+    for (int i = 0; i < n; i++)
     {
-        scanf("%d", &trucks[i]);
+        scanf("%d", &arr[i]);
     }
-
-    int choice;
-    while(1)
+    bool cont = true;
+    int option;
+    while (cont)
     {
-        printf("1. Show the trucks\n");
-        printf("2. Enter a truck\n");
-        printf("3. Exit a truck\n");
-        printf("4. Show whether the truck is in the garage or not\n");
-        printf("5. Exit\n");
-        printf("Enter your choice : ");
-        scanf("%d", &choice);
-        if (choice == 1)
+        printf("\n\nWhat operation do you want to perform?");
+        printf("\n1.Enter Garage");
+        printf("\n2.Exit Garage");
+        printf("\n3.On Road");
+        printf("\n4.Show Trucks");
+        printf("\n5.Exit");
+        printf("\n> ");
+        scanf("%d", &option);
+        int tNo;
+        char choice;
+        if (option == 1)
         {
-            showTrucks();
+            printf("\nEnter truck No.: ");
+            scanf("%d", &tNo);
+            if (onRoad(tNo))
+            {
+                enterGarage(tNo);
+                printf("\nTruck %d entered the Garage", tNo);
+            }
+            else
+            {
+                printf("\nTruck %d is already in the Garage", tNo);
+            }
         }
-        else if (choice == 2)
+        else if (option == 2)
         {
-            // int tNo;
-            // printf("\nEnter truck number : ");
-            // scanf("%d", &tNo);
-            // int check = 0;
-            // for(int i=0;i<n;i++) 
-            // {
-            //     if(tNo == trucks[i])
-            //     {
-            //         check = 1;
-            //         break;
-            //     }
-            // }
-            // if(check == 1)
-            // {
-            //     enterGarage(tNo);
-            //     printf("Truck is Entered\n\n");
-            // }
-            // else
-            // {
-            //     printf("truck %d is not on Road", tNo);
-            // }
+            printf("\nEnter truck No.: ");
+            scanf("%d", &tNo);
+            if (exitGarage(tNo) == 0)
+            {
+                printf("\nTruck %d has exited the garage", tNo);
+            }
+            else
+            {
+                printf("\nTruck %d is not near the garage door", tNo);
+            }
         }
-        else if(choice == 3)
+        else if (option == 3)
         {
-            // int tNo;
-            // printf("\nEnter truck number : ");
-            // scanf("%d", &tNo);
-            // exitGarage(tNo);
+            printf("\nEnter truck No.: ");
+            scanf("%d", &tNo);
+            if (onRoad(tNo))
+            {
+                printf("\nTruck %d is on Road", tNo);
+            }
+            else
+            {
+                printf("\nTruck %d is not on Road", tNo);
+            }
         }
-        else if(choice == 4)
+        else if (option == 4)
         {
-            // int tNo;
-            // printf("\nEnter truck number : ");
-            // scanf("%d", &tNo);
-            // int check = 0;
-            // for(int i=0;i<n;i++) 
-            // {
-            //     if(tNo == trucks[i])
-            //     {
-            //         check = 1;
-            //         break;
-            //     }
-            // }
-            // if(check == 1)
-            // {
-            //     printf("Truck %d is on Road\n\n", tNo);
-            // }
-            // else
-            // {
-            //     printf("Truck %d is not on Road\n", tNo);
-            // }
+            printf("\nDo you want to see the trucks in garage(g) or road(r): ");
+            scanf("%s", &choice);
+            printf("\nThe following trucks are ");
+            if (choice == 'g')
+            {
+                printf("in garage: ");
+            }
+            else if (choice == 'r')
+            {
+                printf("on road: ");
+            }
+            else
+            {
+                continue;
+            }
+            if (choice == 'g')
+            {
+                showTrucks();
+            }
+            else
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    if (choice == 'r' && onRoad(arr[i]))
+                    {
+                        printf("%d ", arr[i]);
+                    }
+                }
+            }
         }
-        else if(choice == 5)
+        else if (option == 5)
         {
-            // break;
+            cont = false;
+            break;
         }
-        else
-        {
-            // printf("\nInvalid Input... Try Again");
-        }
-        
     }
-
     return 0;
 }

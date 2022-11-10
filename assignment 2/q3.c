@@ -55,31 +55,6 @@ void print()
     } while (temp != front);
 }
 
-// void deleteKey(int key)
-// {
-//     if (key == 0)
-//     {
-
-//         struct term *temp;
-//         if (front == NULL && rear == NULL)
-//             printf("No node to delete\n");
-//         else if (front == rear)
-//         {
-//             front = rear = NULL;
-//         }
-//         else
-//         {
-//             struct node *tempData = front->data;
-//             printf("Deleted node: name: %s, roll: %d\n", tempData->name, tempData->roll);
-//             front = front->next;
-//             rear->next = front;
-//         }
-//     }
-//     else{
-        
-//     }
-// }
-
 void deletefirst()
 {
 
@@ -111,11 +86,40 @@ void deletelast()
     }
     else
     {
-        struct node *tempData = front->data;
-        printf("Deleted node: name: %s, roll: %d\n", tempData->name, tempData->roll);
-        rear = rear->next;
-        front->next = front;
+        struct term *tempData = front;
+        while (tempData->next != rear)
+        {
+            tempData = tempData->next;
+        }
+        rear = tempData;
+        tempData = tempData->next;
+        struct node *data = tempData->data;
+
+        printf("Deleted node: name: %s, roll: %d\n", data->name, data->roll);
+        free(tempData);
+        rear->next = front;
     }
+}
+
+void deletekey(int key)
+{
+    if (key == 0 ) {
+
+        deletefirst();
+        return ;
+    }
+    int i = 0;
+    struct term *temp = front;
+    while (i++ != key-1)
+    {
+        temp = temp->next;
+    }
+    struct term *temp2 = temp->next;
+    temp->next = temp2->next;
+    struct node *data = temp2->data;
+    printf("Deleted node: name: %s, roll: %d\n", data->name, data->roll);
+    free(temp2);
+
 }
 
 void insertfirst()
@@ -175,7 +179,7 @@ int main()
     while (c)
     {
         printf("\n1.create\t\t2.del(key)\n3.dFirst\t\t4.dLast\n5.ins(data)\t\t6.iFirst(data)\n7.iLast(data)\t\t8.print\n0.exit\n");
-        int op;
+        int op, key;
         printf("Enter your choice : ");
         scanf("%d", &op);
         switch (op)
@@ -186,8 +190,9 @@ int main()
             printf("A new List has been created\n");
             break;
         case 2:
-            // int key;scanf("%d",key);
-            // deletekey(key);
+            printf("Enter key: ");
+            scanf("%d", &key);
+            deletekey(key);
             break;
         case 3:
             deletefirst();
